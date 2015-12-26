@@ -1,4 +1,6 @@
 import tokenizer from '../tokenizer';
+import normalizer from '../normalizer';
+
 import { get, set } from 'lodash';
 
 export default class VisualizationModel {
@@ -6,6 +8,7 @@ export default class VisualizationModel {
     this.sources = sources;
 
     this._tokenizer = customServices.tokenizer || tokenizer;
+    this._normalizer = customServices.normalizer || normalizer;
 
     this._lists = {};
     this._map = {};
@@ -23,29 +26,38 @@ export default class VisualizationModel {
     return this.sources.reduce(fn, mem);
   }
 
-  tokenize() {
-    this.forEach((source) => {
-      const { content } = source;
-      if (!content.tokens) {
-        content.tokens = this._tokenizer.tokenize(content.text);
-      }
-    });
-
-    return this;
+  tokenize(opts = {}) {
+    return tokenize(this, opts);
   }
 
-  getAllTokens() {
-    return this.computeCached('_.lists.tokens', () => {
-      return this.tokenize().reduce(
-        (result, source) => result.concat(source.content.tokens), []
+  getAllTokens(opts = {}) {
+    const attr = opts.normalize ? 'normalizedTokens' : 'tokens';
+    return computeCached(this, `_.lists.${attr}`, () => {
+      return this.tokenize(opts).reduce(
+        (result, source) => result.concat(source.content[attr]), []
       );
     });
   }
 
-  computeCached(path, fn) {
-    if (!get(this, path)) {
-      set(this, path, fn());
+}
+
+function tokenize(instance, { normalize }) {
+  instance.forEach((source) => {
+    const { content } = source;
+    if (!content.tokens) {
+      content.tokens = instance._tokenizer.tokenize(content.text);
     }
-    return get(this, path);
+    if (normalize && !content.normalizedTokens) {
+      content.normalizedTokens = content.tokens.map(instance._normalizer.normalize);
+    }
+  });
+
+  return instance;
+}
+
+function computeCached(instance, path, fn) {
+  if (!get(instance, path)) {
+    set(instance, path, fn());
   }
+  return get(instance, path);
 }

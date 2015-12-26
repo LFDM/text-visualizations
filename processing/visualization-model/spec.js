@@ -53,7 +53,10 @@ describe('tokenize()', () => {
   beforeEach(function() {
     model = new VisualizationModel(sources, {
       tokenizer: {
-        tokenize: sinon.stub().returns([])
+        tokenize: sinon.stub().returns(['', '', ''])
+      },
+      normalizer: {
+        normalize: sinon.stub().returns('')
       }
     });
   });
@@ -82,6 +85,16 @@ describe('tokenize()', () => {
   it('returns itself for easier chaining', () => {
     const actual = model.tokenize();
     expect(actual).to.equal(model);
+  });
+
+  it('does not run normalizer by default', () => {
+    model.tokenize();
+    expect(model._normalizer.normalize).not.to.have.been.called;
+  });
+
+  it('runs with normalizer with options { normalize: true }', () => {
+    model.tokenize({ normalize: true });
+    expect(model._normalizer.normalize).to.have.been.called;
   });
 });
 
