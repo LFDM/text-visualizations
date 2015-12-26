@@ -6,8 +6,20 @@ export default class VisualizationModel {
     this.tokenizer = tokenizer;
   }
 
+  forEach(fn) {
+    return this.sources.forEach(fn);
+  }
+
+  map(fn) {
+    return this.sources.map(fn);
+  }
+
+  reduce(fn, mem) {
+    return this.sources.reduce(fn, mem);
+  }
+
   tokenize() {
-    this.sources.forEach((source) => {
+    this.forEach((source) => {
       const { content } = source;
       if (!content.tokens) {
         content.tokens = this.tokenizer.tokenize(content.text);
@@ -19,6 +31,6 @@ export default class VisualizationModel {
 
   getAllTokens() {
     this.tokenize();
-    return this.sources.reduce((result, source) => result.concat(source.content.tokens), []);
+    return this.reduce((result, source) => result.concat(source.content.tokens), []);
   }
 }

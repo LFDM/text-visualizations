@@ -85,7 +85,7 @@ describe('tokenize()', () => {
   describe('getAllTokens()', () => {
     it('returns a list of all tokens from all sources', () => {
       const tokens = model.getAllTokens();
-      const count = model.sources.reduce(
+      const count = model.reduce(
         (sum, source) => sum + source.content.tokens.length, 0
       );
       expect(tokens).to.have.length(count);
