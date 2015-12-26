@@ -1,9 +1,13 @@
 import tokenizer from '../tokenizer';
+import { get, set } from 'lodash';
 
 export default class VisualizationModel {
   constructor(sources) {
     this.sources = sources;
     this.tokenizer = tokenizer;
+
+    this._lists = {};
+    this._map = {};
   }
 
   forEach(fn) {
@@ -30,11 +34,17 @@ export default class VisualizationModel {
   }
 
   getAllTokens() {
-    if (!this._tokens) {
-      this._tokens = this.tokenize().reduce(
+    return this.computeCached('_.lists.tokens', () => {
+      return this.tokenize().reduce(
         (result, source) => result.concat(source.content.tokens), []
       );
+    });
+  }
+
+  computeCached(path, fn) {
+    if (!get(this, path)) {
+      set(this, path, fn());
     }
-    return this._tokens;
+    return get(this, path);
   }
 }
