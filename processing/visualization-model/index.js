@@ -4,11 +4,11 @@ import normalizer from '../normalizer';
 import { get, set } from 'lodash';
 
 export default class VisualizationModel {
-  constructor(sources, customServices = {}) {
+  constructor(sources, opts = {}) {
     this.sources = sources;
 
-    this._tokenizer = customServices.tokenizer || tokenizer;
-    this._normalizer = customServices.normalizer || normalizer;
+    this._tokenizer = opts.tokenizer || tokenizer;
+    this._normalizer = opts.normalizer || normalizer;
 
     this._lists = {};
     this._map = {};
@@ -30,6 +30,10 @@ export default class VisualizationModel {
     return tokenize(this, opts);
   }
 
+  normalize(token) {
+    return this._normalizer.normalize(token);
+  }
+
   getAllTokens(opts = {}) {
     const attr = opts.normalize ? 'normalizedTokens' : 'tokens';
     return computeCached(this, `_.lists.${attr}`, () => {
@@ -48,7 +52,7 @@ function tokenize(instance, { normalize }) {
       content.tokens = instance._tokenizer.tokenize(content.text);
     }
     if (normalize && !content.normalizedTokens) {
-      content.normalizedTokens = content.tokens.map(instance._normalizer.normalize);
+      content.normalizedTokens = content.tokens.map((token) => instance.normalize(token));
     }
   });
 

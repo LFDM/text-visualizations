@@ -15,7 +15,7 @@ beforeEach(function() {
         }
       },
       content: {
-        text: 'This is the first test text.'
+        text: 'This is the first test Text. A second sentence is present here, but no third.'
       }
     },
     {
@@ -25,7 +25,7 @@ beforeEach(function() {
         }
       },
       content: {
-        text: 'This is the second test text.'
+        text: 'This is the second of the test texts. A second sentence is present here, but not a third.'
 
       }
     },
@@ -36,7 +36,7 @@ beforeEach(function() {
         }
       },
       content: {
-        text: 'This is the third of the test texts.'
+        text: 'This is the third test text. A second sentence is present is this text. Also a third.'
       }
     }
   ];
@@ -125,5 +125,25 @@ describe('getAllTokens()', () => {
     model.getAllTokens();
     expect(model.tokenize).to.have.been.calledOnce;
   });
+
+  it('can return a normalized list by passing { normalize: true }', () => {
+    const opts = { normalize: true };
+    model.tokenize = sinon.stub().returns(model);
+    model.getAllTokens(opts);
+    expect(model.tokenize).to.have.been.calledWith(opts);
+  });
 });
 
+fdescribe('normalize()', () => {
+  it('delegates to the normalizer', () => {
+    const token = 'xxx';
+    const fakeReturn = 'yyy';
+    model = new VisualizationModel([], {
+      normalizer: { normalize: sinon.stub().returns(fakeReturn) }
+    });
+
+    const actual = model.normalize(token);
+    expect(model._normalizer.normalize).to.have.been.called;
+    expect(actual).to.equal(fakeReturn);
+  });
+});
