@@ -1,5 +1,6 @@
 import tokenizer from '../tokenizer';
 import normalizer from '../normalizer';
+import service from './service';
 
 import { get, set } from 'lodash';
 
@@ -9,6 +10,7 @@ export default class VisualizationModel {
 
     this._tokenizer = opts.tokenizer || tokenizer;
     this._normalizer = opts.normalizer || normalizer;
+    this._contextSize = opts.contextSize || 5;
 
     this._lists = {};
     this._map = {};
@@ -36,13 +38,32 @@ export default class VisualizationModel {
 
   getAllTokens(opts = {}) {
     const attr = opts.normalize ? 'normalizedTokens' : 'tokens';
-    return computeCached(this, `_.lists.${attr}`, () => {
+    return computeCached(this, `_lists.${attr}`, () => {
       return this.tokenize(opts).reduce(
         (result, source) => result.concat(source.content[attr]), []
       );
     });
   }
 
+  getContexts(token) {
+    this.tokenize({ normalize: true });
+    const normalizedToken = this.normalize(token);
+    return computeCached(this, `_maps.contextualizedTokens.${token}`, () => {
+      return this.reduce((mem, source) => {
+        var { tokenMap, normalizedTokens } = source.content;
+        if (!tokenMap) { tokenMap = source.content.tokenMap = {}; }
+        var contexts = tokenMap[normalizedToken];
+        if (!contexts) {
+          const indices = service.findIndices(normalizedTokens, normalizedToken);
+          contexts = indices.map(
+            (i) => service.extractContext(normalizedTokens, i, this._contextSize)
+          );
+          tokenMap[token] = contexts;
+        }
+        return mem.concat(contexts.map((context) => ({ context, source })));
+      }, []);
+    });
+  }
 }
 
 function tokenize(instance, { normalize }) {

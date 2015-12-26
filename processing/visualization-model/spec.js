@@ -134,7 +134,7 @@ describe('getAllTokens()', () => {
   });
 });
 
-fdescribe('normalize()', () => {
+describe('normalize()', () => {
   it('delegates to the normalizer', () => {
     const token = 'xxx';
     const fakeReturn = 'yyy';
@@ -147,3 +147,11 @@ fdescribe('normalize()', () => {
     expect(actual).to.equal(fakeReturn);
   });
 });
+
+describe('getContexts', () => {
+  it('takes a token and returns all context items', () => {
+    const contexts = model.getContexts('text');
+    expect(contexts).to.have.length(3);
+  });
+});
+
