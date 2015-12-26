@@ -81,5 +81,15 @@ describe('tokenize()', () => {
     const actual = model.tokenize();
     expect(actual).to.equal(model);
   });
+
+  describe('getAllTokens()', () => {
+    it('returns a list of all tokens from all sources', () => {
+      const tokens = model.getAllTokens();
+      const count = model.sources.reduce(
+        (sum, source) => sum + source.content.tokens.length, 0
+      );
+      expect(tokens).to.have.length(count);
+    });
+  });
 });
 
