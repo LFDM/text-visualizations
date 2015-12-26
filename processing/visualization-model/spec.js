@@ -51,9 +51,11 @@ describe('constructor', () => {
 
 describe('tokenize()', () => {
   beforeEach(function() {
-    model.tokenizer = {
-      tokenize: sinon.stub().returns([])
-    };
+    model = new VisualizationModel(sources, {
+      tokenizer: {
+        tokenize: sinon.stub().returns([])
+      }
+    });
   });
 
   it('tokenizes all source objects', () => {
@@ -68,13 +70,13 @@ describe('tokenize()', () => {
 
   it('uses the tokenizer service', () => {
     model.tokenize();
-    expect(model.tokenizer.tokenize).to.have.callCount(sources.length);
+    expect(model._tokenizer.tokenize).to.have.callCount(sources.length);
   });
 
   it('does not retokenize when tokenization has already been performed', () => {
     model.tokenize();
     model.tokenize();
-    expect(model.tokenizer.tokenize).to.have.callCount(sources.length);
+    expect(model._tokenizer.tokenize).to.have.callCount(sources.length);
   });
 
   it('returns itself for easier chaining', () => {

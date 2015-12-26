@@ -2,9 +2,10 @@ import tokenizer from '../tokenizer';
 import { get, set } from 'lodash';
 
 export default class VisualizationModel {
-  constructor(sources) {
+  constructor(sources, customServices = {}) {
     this.sources = sources;
-    this.tokenizer = tokenizer;
+
+    this._tokenizer = customServices.tokenizer || tokenizer;
 
     this._lists = {};
     this._map = {};
@@ -26,7 +27,7 @@ export default class VisualizationModel {
     this.forEach((source) => {
       const { content } = source;
       if (!content.tokens) {
-        content.tokens = this.tokenizer.tokenize(content.text);
+        content.tokens = this._tokenizer.tokenize(content.text);
       }
     });
 
