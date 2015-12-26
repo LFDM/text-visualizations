@@ -1,0 +1,34 @@
+{
+  "name": "text-visualizations",
+  "version": "0.0.1",
+  "description": "Utilities to visualize text, including bindings for several client-side frameworks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "mocha": "mocha **/*.spec.js --compilers js:babel/register --require spec/setup -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LFDM/text-visualizations.git"
+  },
+  "author": "LFDM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LFDM/text-visualizations/issues"
+  },
+  "homepage": "https://github.com/LFDM/text-visualizations#readme",
+  "dependencies": {
+    "natural": "^0.2.1"
+  },
+  "devDependencies": {
+    "babel": "^6.3.26",
+    "babel-core": "^6.3.26",
+    "babel-eslint": "^4.1.6",
+    "chai": "^3.4.1",
+    "chai-as-promised": "^5.2.0",
+    "eslint": "^1.10.3",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
+  }
+}
