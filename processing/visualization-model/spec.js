@@ -96,6 +96,14 @@ describe('tokenize()', () => {
     model.tokenize({ normalize: true });
     expect(model._normalizer.normalize).to.have.been.called;
   });
+
+  it('does not run normalizer twice', () => {
+    model.tokenize({ normalize: true });
+    model._normalizer.normalize.reset();
+
+    model.tokenize({ normalize: true });
+    expect(model._normalizer.normalize).not.to.have.been.called;
+  });
 });
 
 describe('getAllTokens()', () => {
