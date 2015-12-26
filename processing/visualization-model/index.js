@@ -30,7 +30,11 @@ export default class VisualizationModel {
   }
 
   getAllTokens() {
-    this.tokenize();
-    return this.reduce((result, source) => result.concat(source.content.tokens), []);
+    if (!this._tokens) {
+      this._tokens = this.tokenize().reduce(
+        (result, source) => result.concat(source.content.tokens), []
+      );
+    }
+    return this._tokens;
   }
 }
