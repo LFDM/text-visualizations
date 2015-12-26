@@ -14,4 +14,11 @@ describe('tokenize()', () => {
     const actual = service.tokenize(text);
     expect(actual).to.deep.equal(expected);
   });
+
+  it('deals with multiple sentences as well', () => {
+    const text = 'A sentence. And another.';
+    const expected = ['A', 'sentence', '.', 'And', 'another', '.'];
+    const actual = service.tokenize(text);
+    expect(actual).to.deep.equal(expected);
+  });
 });
