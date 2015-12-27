@@ -1,11 +1,13 @@
 import tokenizer from '../tokenizer';
 import normalizer from '../normalizer';
+import filter from '../filter';
 import {
   findIndices,
   extractContext,
   computeCached,
   countFrequencies,
   combineFrequencies,
+  sortByFrequency,
   delegate
 } from './service';
 
@@ -15,6 +17,7 @@ export default class VisualizationModel {
 
     this._tokenizer = opts.tokenizer || tokenizer;
     this._normalizer = opts.normalizer || normalizer;
+    this._filter = opts.filter || filter;
     this._contextSize = opts.contextSize || 5;
 
     this._lists = {};
@@ -22,6 +25,7 @@ export default class VisualizationModel {
 
     delegate(this, 'sources', ['forEach', 'map', 'reduce']);
     delegate(this, '_normalizer', ['normalize']);
+    delegate(this, '_filter', ['filterStopwords, isStopword']);
   }
 
   tokenize(opts = {}) {
@@ -57,12 +61,19 @@ export default class VisualizationModel {
     });
   }
 
-  getFrequencies(opts = { normalize: true }) {
+  getFrequencies(opts = { normalize: true, filter: { stopwords: true } }) {
     return computeCached(this, '_maps.frequencies', () => {
       this.tokenize(opts);
       const container = opts.normalize ? 'normalizedTokens' : 'tokens';
-      const frequencies = this.map((source) => countFrequencies(source.content[container]));
-      return combineFrequencies(frequencies);
+      const frequencies = this.map((source) => {
+        const tokens = source.content[container];
+        const filtered = filter && filter.stopwords ?
+          this.filterStopwords(tokens) :
+          tokens;
+        return countFrequencies(filtered);
+      });
+      const combined = combineFrequencies(frequencies);
+      return sortByFrequency(combined);
     });
   }
 }
