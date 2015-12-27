@@ -14,26 +14,13 @@ export default class VisualizationModel {
 
     this._lists = {};
     this._map = {};
-  }
 
-  forEach(fn) {
-    return this.sources.forEach(fn);
-  }
-
-  map(fn) {
-    return this.sources.map(fn);
-  }
-
-  reduce(fn, mem) {
-    return this.sources.reduce(fn, mem);
+    delegate.call(this, 'sources', ['forEach', 'map', 'reduce']);
+    delegate.call(this, '_normalizer', ['normalize']);
   }
 
   tokenize(opts = {}) {
     return tokenize(this, opts);
-  }
-
-  normalize(token) {
-    return this._normalizer.normalize(token);
   }
 
   getAllTokens(opts = {}) {
@@ -85,4 +72,13 @@ function computeCached(instance, path, fn) {
     set(instance, path, fn());
   }
   return get(instance, path);
+}
+
+// this will be a decorator once babel 6 supports them again
+function delegate(target, delegators) {
+  delegators.forEach((delegator) => {
+    this[delegator] = function(...args) {
+      return this[target][delegator](...args);
+    };
+  });
 }
