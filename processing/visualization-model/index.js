@@ -25,7 +25,7 @@ export default class VisualizationModel {
 
     delegate(this, 'sources', ['forEach', 'map', 'reduce']);
     delegate(this, '_normalizer', ['normalize']);
-    delegate(this, '_filter', ['filterStopwords, isStopword']);
+    delegate(this, '_filter', ['filterStopwords', 'isStopword']);
   }
 
   tokenize(opts = {}) {
@@ -62,12 +62,13 @@ export default class VisualizationModel {
   }
 
   getFrequencies(opts = { normalize: true, filter: { stopwords: true } }) {
-    return computeCached(this, '_maps.frequencies', () => {
+
+    return computeCached(this, getFrequencyCacheKey(opts), () => {
       this.tokenize(opts);
       const container = opts.normalize ? 'normalizedTokens' : 'tokens';
       const frequencies = this.map((source) => {
         const tokens = source.content[container];
-        const filtered = filter && filter.stopwords ?
+        const filtered = opts.filter && opts.filter.stopwords ?
           this.filterStopwords(tokens) :
           tokens;
         return countFrequencies(filtered);
@@ -89,6 +90,13 @@ function getTokenStats(source, normalizedToken) {
   var tokenStats = tokenMap[normalizedToken];
   if (!tokenStats) { tokenStats = tokenMap[normalizedToken] = {}; }
   return tokenStats;
+}
+
+function getFrequencyCacheKey(opts) {
+  var key = '_lists.frequencies';
+  if (opts.normalize) { key = key + 'Normalized'; }
+  if (opts.filter && opts.filter.stopWords) { key = key + 'WithoutStopwords'; }
+  return key;
 }
 
 function tokenize(instance, { normalize }) {
