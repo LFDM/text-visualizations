@@ -149,7 +149,7 @@ describe('VisualizationModel', () => {
     });
   });
 
-  describe('getContexts', () => {
+  describe('getContexts()', () => {
     it('takes a token and returns all context items', () => {
       const contexts = model.getContexts('text');
       expect(contexts).to.have.length(3);
