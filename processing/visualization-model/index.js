@@ -4,6 +4,8 @@ import {
   findIndices,
   extractContext,
   computeCached,
+  countFrequencies,
+  combineFrequencies,
   delegate
 } from './service';
 
@@ -52,6 +54,15 @@ export default class VisualizationModel {
         }
         return mem.concat(contexts.map((context) => ({ context, source })));
       }, []);
+    });
+  }
+
+  getFrequencies(opts = { normalize: true }) {
+    return computeCached(this, '_maps.frequencies', () => {
+      this.tokenize(opts);
+      const container = opts.normalize ? 'normalizedTokens' : 'tokens';
+      const frequencies = this.map((source) => countFrequencies(source.content[container]));
+      return combineFrequencies(frequencies);
     });
   }
 }

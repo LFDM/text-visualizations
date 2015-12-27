@@ -155,5 +155,34 @@ describe('VisualizationModel', () => {
       expect(contexts).to.have.length(3);
     });
   });
+
+  describe('getFrequencies()', () => {
+    it('returns a frequency object', () => {
+      const frequencies = model.getFrequencies();
+      const expected = {
+        ',': 2,
+        '.': 7,
+        a: 5,
+        also: 1,
+        but: 2,
+        first: 1,
+        here: 2,
+        is: 7,
+        no: 1,
+        not: 1,
+        of: 1,
+        present: 3,
+        second: 4,
+        sentence: 3,
+        test: 3,
+        text: 3,
+        texts: 1,
+        the: 4,
+        third: 4,
+        'this': 4
+      };
+      expect(frequencies).to.deep.equal(expected);
+    });
+  });
 });
 
