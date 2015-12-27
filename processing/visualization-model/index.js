@@ -1,6 +1,11 @@
 import tokenizer from '../tokenizer';
 import normalizer from '../normalizer';
-import { findIndices, extractContext, computeCached, delegate } from './service';
+import {
+  findIndices,
+  extractContext,
+  computeCached,
+  delegate
+} from './service';
 
 export default class VisualizationModel {
   constructor(sources, opts = {}) {
@@ -51,9 +56,14 @@ export default class VisualizationModel {
   }
 }
 
-function getTokenStats(source, normalizedToken) {
+function getTokenMap(source) {
   var { tokenMap } = source.content;
   if (!tokenMap) { tokenMap = source.content.tokenMap = {}; }
+  return tokenMap;
+}
+
+function getTokenStats(source, normalizedToken) {
+  const tokenMap = getTokenMap(source);
   var tokenStats = tokenMap[normalizedToken];
   if (!tokenStats) { tokenStats = tokenMap[normalizedToken] = {}; }
   return tokenStats;
