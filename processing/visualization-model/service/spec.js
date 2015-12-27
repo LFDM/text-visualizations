@@ -54,3 +54,32 @@ describe('countFrequencies()', () => {
     expect(actual).to.deep.equal(expected);
   });
 });
+
+describe('combineFrequencies()', () => {
+  it('combines several frequency maps to one', () => {
+    const frequencies = [
+      { a: 3, b: 2, c: 1 },
+      { a: 3, b: 2, c: 1, d: 1 },
+      { a: 3, b: 2, c: 1 }
+    ];
+    const expected = { a: 9, b: 6, c: 3, d: 1 };
+    const actual = service.combineFrequencies(frequencies);
+    expect(actual).to.deep.equal(expected);
+  });
+
+  it('works when there is no frequency at all', () => {
+    const frequencies = [];
+    const expected = {};
+    const actual = service.combineFrequencies(frequencies);
+    expect(actual).to.deep.equal(expected);
+  });
+
+  it('works when there is only one frequency', () => {
+    const frequencies = [ { a: 3, b: 2, c: 1 } ];
+    const expected = { a: 3, b: 2, c: 1 };
+    const actual = service.combineFrequencies(frequencies);
+    expect(actual).to.deep.equal(expected);
+
+  });
+
+});

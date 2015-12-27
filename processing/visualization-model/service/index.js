@@ -1,9 +1,10 @@
-import { get, set } from 'lodash';
+import { get, set, forEach } from 'lodash';
 
 export {
   findIndices,
   extractContext,
   countFrequencies,
+  combineFrequencies,
   computeCached,
   delegate
 };
@@ -37,6 +38,21 @@ function countFrequencies(tokens) {
     mem[token] = count + 1;
     return mem;
   }, {});
+}
+
+function combineFrequencies(frequencies) {
+  const total = frequencies.length;
+  if (!total) { return {}; }
+  if (total === 1) { return frequencies[0]; }
+
+  const start = frequencies.pop();
+  return frequencies.reduce((mem, frequency) => {
+    forEach(frequency, (count, token) => {
+      const originalCount = mem[token] || 0;
+      mem[token] = originalCount + count;
+    });
+    return mem;
+  }, start);
 }
 
 function computeCached(instance, path, fn) {
