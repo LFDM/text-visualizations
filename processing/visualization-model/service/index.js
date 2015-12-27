@@ -34,8 +34,7 @@ function extractContext(tokens, i, contextSize) {
 
 function countFrequencies(tokens) {
   return tokens.reduce((mem, token) => {
-    const count = mem[token] || 0;
-    mem[token] = count + 1;
+    addToCount(mem, token, 1);
     return mem;
   }, {});
 }
@@ -47,12 +46,14 @@ function combineFrequencies(frequencies) {
 
   const start = frequencies.pop();
   return frequencies.reduce((mem, frequency) => {
-    forEach(frequency, (count, token) => {
-      const originalCount = mem[token] || 0;
-      mem[token] = originalCount + count;
-    });
+    forEach(frequency, (count, token) => { addToCount(mem, token, count); });
     return mem;
   }, start);
+}
+
+function addToCount(mem, token, count) {
+  const originalCount = mem[token] || 0;
+  mem[token] = originalCount + count;
 }
 
 function computeCached(instance, path, fn) {
