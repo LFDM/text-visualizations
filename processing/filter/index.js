@@ -8,6 +8,7 @@ const STOPWORDS = {
   'again': true,
   'against': true,
   'all': true,
+  'also': true,
   'am': true,
   'an': true,
   'and': true,
@@ -188,20 +189,25 @@ const STOPWORDS = {
 
 export default {
   STOPWORDS,
-  filterStopwords
+  filterStopwords,
+  isStopword
 };
 
 function filterStopwords(collection) {
   if (isArray(collection)) {
-    return filter(collection, v => !STOPWORDS[v]);
+    return filter(collection, v => !isStopword(v));
   } else {
     return reduce(collection, (mem, v, k) => {
-      if (!STOPWORDS[k]) {
+      if (!isStopword(k)) {
         mem[k] = v;
       }
       return mem;
     }, {});
   }
+}
+
+function isStopword(token) {
+  return STOPWORDS[token];
 }
 
 
