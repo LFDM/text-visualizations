@@ -1,10 +1,11 @@
-import { get, set, forEach } from 'lodash';
+import { get, set, forEach, map, sortByOrder } from 'lodash';
 
 export {
   findIndices,
   extractContext,
   countFrequencies,
   combineFrequencies,
+  sortByFrequency,
   computeCached,
   delegate
 };
@@ -49,6 +50,11 @@ function combineFrequencies(frequencies) {
     forEach(frequency, (count, token) => { addToCount(mem, token, count); });
     return mem;
   }, start);
+}
+
+function sortByFrequency(frequencies) {
+  const mapped = map(frequencies, (v, k) => ({ token: k, frequency: v }));
+  return sortByOrder(mapped, 'frequency', 'desc');
 }
 
 function addToCount(mem, token, count) {

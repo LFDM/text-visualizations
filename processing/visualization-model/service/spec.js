@@ -79,7 +79,18 @@ describe('combineFrequencies()', () => {
     const expected = { a: 3, b: 2, c: 1 };
     const actual = service.combineFrequencies(frequencies);
     expect(actual).to.deep.equal(expected);
-
   });
+});
 
+describe('sortByFrequency()', () => {
+  it('returns a frequency dictionary sorted as array of objects', () => {
+    const frequencies = { a: 2, b: 3, c: 1 };
+    const expected = [
+      { token: 'b', frequency: 3 },
+      { token: 'a', frequency: 2 },
+      { token: 'c', frequency: 1 }
+    ];
+    const actual = service.sortByFrequency(frequencies);
+    expect(actual).to.deep.equal(expected);
+  });
 });
