@@ -1,6 +1,10 @@
-export default {
+import { get, set } from 'lodash';
+
+export {
   findIndices,
-  extractContext
+  extractContext,
+  computeCached,
+  delegate
 };
 
 function findIndices(tokens, token) {
@@ -26,3 +30,18 @@ function extractContext(tokens, i, contextSize) {
   return { before, after, token, i };
 }
 
+function computeCached(instance, path, fn) {
+  if (!get(instance, path)) {
+    set(instance, path, fn());
+  }
+  return get(instance, path);
+}
+
+// this will be a decorator once babel 6 supports them again
+function delegate(instance, target, delegators) {
+  delegators.forEach((delegator) => {
+    instance[delegator] = function(...args) {
+      return instance[target][delegator](...args);
+    };
+  });
+}

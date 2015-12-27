@@ -1,4 +1,4 @@
-import service from '.';
+import * as service from '.';
 
 describe('findIndices()', () => {
   it('finds all indices in a list of strings', () => {
