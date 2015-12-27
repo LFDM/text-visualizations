@@ -157,9 +157,18 @@ describe('VisualizationModel', () => {
   });
 
   describe('getFrequencies()', () => {
-    xit('returns a frequency object', () => {
-      const frequencies = model.getFrequencies({ normalize: true });
-      const expected = [];
+    it('returns a frequency object, defaults to normalized and without stopwords', () => {
+      const frequencies = model.getFrequencies();
+      const expected = [
+        { token: 'third', frequency: 4 },
+        { token: 'second', frequency: 4 },
+        { token: 'test', frequency: 3 },
+        { token: 'text', frequency: 3 },
+        { token: 'sentence', frequency: 3 },
+        { token: 'present', frequency: 3 },
+        { token: 'first', frequency: 1 },
+        { token: 'texts', frequency: 1 },
+      ];
       expect(frequencies).to.deep.equal(expected);
     });
   });
