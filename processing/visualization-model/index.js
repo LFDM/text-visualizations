@@ -35,20 +35,28 @@ export default class VisualizationModel {
     const normalizedToken = this.normalize(token);
     return computeCached(this, `_maps.contextualizedTokens.${token}`, () => {
       return this.reduce((mem, source) => {
-        var { tokenMap, normalizedTokens } = source.content;
-        if (!tokenMap) { tokenMap = source.content.tokenMap = {}; }
-        var contexts = tokenMap[normalizedToken];
+        const { normalizedTokens } = source.content;
+        const tokenStats = getTokenStats(source, normalizedToken);
+        var contexts = tokenStats.contexts;
         if (!contexts) {
           const indices = findIndices(normalizedTokens, normalizedToken);
           contexts = indices.map(
             (i) => extractContext(normalizedTokens, i, this._contextSize)
           );
-          tokenMap[token] = contexts;
+          tokenStats.contexts = contexts;
         }
         return mem.concat(contexts.map((context) => ({ context, source })));
       }, []);
     });
   }
+}
+
+function getTokenStats(source, normalizedToken) {
+  var { tokenMap } = source.content;
+  if (!tokenMap) { tokenMap = source.content.tokenMap = {}; }
+  var tokenStats = tokenMap[normalizedToken];
+  if (!tokenStats) { tokenStats = tokenMap[normalizedToken] = {}; }
+  return tokenStats;
 }
 
 function tokenize(instance, { normalize }) {
