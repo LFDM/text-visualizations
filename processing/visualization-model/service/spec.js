@@ -45,3 +45,12 @@ describe('extractContext', () => {
     expect(actual).to.deep.equal(expected);
   });
 });
+
+describe('countFrequencies()', () => {
+  it('counts occurences of tokens', () => {
+    const tokens = ['a', 'b', 'a', 'a', 'b', 'c'];
+    const expected = { a: 3, b: 2, c: 1 };
+    const actual = service.countFrequencies(tokens);
+    expect(actual).to.deep.equal(expected);
+  });
+});

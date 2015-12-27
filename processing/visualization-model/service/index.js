@@ -3,6 +3,7 @@ import { get, set } from 'lodash';
 export {
   findIndices,
   extractContext,
+  countFrequencies,
   computeCached,
   delegate
 };
@@ -28,6 +29,14 @@ function extractContext(tokens, i, contextSize) {
   const after = tokens.slice(upperStart, upperBoundary);
   const token = tokens[i];
   return { before, after, token, i };
+}
+
+function countFrequencies(tokens) {
+  return tokens.reduce((mem, token) => {
+    const count = mem[token] || 0;
+    mem[token] = count + 1;
+    return mem;
+  }, {});
 }
 
 function computeCached(instance, path, fn) {
