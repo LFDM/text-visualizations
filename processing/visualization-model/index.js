@@ -33,10 +33,9 @@ export default class VisualizationModel {
   }
 
   getAllTokens(opts = {}) {
-    const attr = opts.normalize ? 'normalizedTokens' : 'tokens';
-    return computeCached(this, `_lists.${attr}`, () => {
+    return computeCached(this, getTokenCacheKey(opts), () => {
       return this.tokenize(opts).reduce(
-        (result, source) => result.concat(source.content[attr]), []
+        (result, source) => result.concat(getTokens(source, opts)), []
       );
     });
   }
@@ -62,21 +61,26 @@ export default class VisualizationModel {
   }
 
   getFrequencies(opts = { normalize: true, filter: { stopwords: true } }) {
-
     return computeCached(this, getFrequencyCacheKey(opts), () => {
       this.tokenize(opts);
-      const container = opts.normalize ? 'normalizedTokens' : 'tokens';
       const frequencies = this.map((source) => {
-        const tokens = source.content[container];
-        const filtered = opts.filter && opts.filter.stopwords ?
-          this.filterStopwords(tokens) :
-          tokens;
+        const tokens = getTokens(source, opts);
+        const filtered = this.applyFilter(tokens, opts.filter);
         return countFrequencies(filtered);
       });
       const combined = combineFrequencies(frequencies);
       return sortByFrequency(combined);
     });
   }
+
+  applyFilter(tokens, opts) {
+    return opts && opts.stopwords ? this.filterStopwords(tokens) : tokens;
+  }
+}
+
+function getTokens(source, opts = {}) {
+  const attr = opts.normalize ? 'normalizedTokens' : 'tokens';
+  return source.content[attr];
 }
 
 function getTokenMap(source) {
@@ -97,6 +101,11 @@ function getFrequencyCacheKey(opts) {
   if (opts.normalize) { key = key + 'Normalized'; }
   if (opts.filter && opts.filter.stopWords) { key = key + 'WithoutStopwords'; }
   return key;
+}
+
+function getTokenCacheKey(opts) {
+  const attr = opts.normalize ? 'normalizedTokens' : 'tokens';
+  return `_lists.${attr}`;
 }
 
 function tokenize(instance, { normalize }) {
