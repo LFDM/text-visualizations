@@ -18,7 +18,7 @@ export default class VisualizationModel {
     this._tokenizer = opts.tokenizer || tokenizer;
     this._normalizer = opts.normalizer || normalizer;
     this._filter = opts.filter || filter;
-    this._contextSize = opts.contextSize || 5;
+    this._contextSize = opts.contextSize || 4;
 
     this._lists = {};
     this._map = {};
